@@ -1,6 +1,15 @@
 <?php
     /****************** logic of include connection file *********************** */
     include("./connection.php");
+
+    session_start();
+    if($_SESSION == true){
+        if($_SESSION['loginUser_roll'] == 1){
+            header("location:./admin.php");
+        }else{
+            header("location:./index.php");
+        }
+    }
 ?>
 
 <!DOCTYPE html>
