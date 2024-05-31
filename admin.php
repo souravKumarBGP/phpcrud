@@ -1,4 +1,5 @@
 <?php 
+    include("./connection.php");
     // ******** check whos person are login user or admin if login is not admin then redired on index page
     session_start();
     
@@ -9,10 +10,8 @@
     }else{
         header("location:./index.php");
     }
-    
 
 ?>
-<a href="./logout.php">Logout</a>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,6 +37,16 @@
         </style>
     </head>
     <body>
+        <a href="./logout.php">Logout</a>
+        
+        <h3>Wealcome:- 
+            <?php
+                $selectQuerry = "SELECT userName FROM userTbl Where userEmail = '{$_SESSION["loginUser1"]}'";
+                $result = mysqli_query($connection, $selectQuerry);
+                echo mysqli_fetch_assoc($result)['userName']
+            ?>
+        </h3>
+
         <h1>Admine Page</h1>
     </body>
 </html>

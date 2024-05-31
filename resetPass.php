@@ -1,14 +1,14 @@
 <?php
-    /****************** logic of include connection file *********************** */
+    // ************* include connection file
     include("./connection.php");
-?>
+?>  
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
-        <title>Login page</title>
+        <title>Reset password</title>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <!-- *************************************** internal style *********************************** -->
@@ -68,49 +68,56 @@
         
     </head>
     <body>
-        <!-- *************** login form ****************************** -->
-        <form action="<?php echo $_SERVER["PHP_SELF"]?>" method="post" id="loginForm">
-            <h3>Login Form</h3>
+        <!-- ************* Start reset password form ********************** -->
+        <form action="<?php echo $_SERVER["PHP_SELF"]?>" method="post" id="resetPassForm">
+            <h3>Reset Your Password</h3>
             <br/>
             <hr color="#1484ff"><br/>
 
-            <input type="email" name="loginEmail" placeholder="Enter email" />
-            <input type="password" name="loginPass" placeholder="Enter password" autocomplete="off" />
-            <input type="submit" name="loginBtn" value="Login" id="loginBtn" />
-            <a href="./resetPass.php">Reset Password</a>
+            <input type="email" name="userEmail" placeholder="Enter email" />
+            <input type="password" name="newPass" placeholder="Enter new password" autocomplete="off" />
+            <input type="password" name="confPass" placeholder="Enter Confirm password" autocomplete="off" />
+            <input type="submit" name="resetBtn" value="Reset Now" id="loginBtn" />
+            <a href="./login.php">Login now</a>
             <a href="./signup.php" style="float: right;">New Member:- Signup</a>
-        </form><!--**** End of login form -->
-
+        </form><!--**** End of reset password form -->
     </body>
-    
 </html>
 
-<?php 
-    // *************** Start logic of login form 
-    if(isset($_POST["loginBtn"])){
+<?php
+    // *************** Start logic of reset password
+    if(isset($_POST["resetBtn"])){
 
-        $loginEmail = addslashes(htmlspecialchars(mysqli_escape_string($connection, $_POST["loginEmail"])));
-        $loginPass = $_POST["loginPass"];
+        // ****** get input fild data
+        $userEmail = addslashes(htmlspecialchars(mysqli_escape_string($connection, $_POST["userEmail"])));
+        $newPass = $_POST["newPass"];
+        $confPass = $_POST["confPass"];
 
-
-        // ***************** logic to apply validation if validation is success then 
-        if($loginEmail != "" and $loginPass != ""){
-            $loginPass = addslashes(md5(mysqli_escape_string($connection, $_POST["loginPass"])));
+        // ****** apply some validation 
+        if($userEmail != "" and $newPass != "" and $confPass != ""){
+            $newPass = addslashes(md5(mysqli_escape_string($connection, $_POST["newPass"])));
+            $confPass = addslashes(md5(mysqli_escape_string($connection, $_POST["confPass"])));
             
             // ************* logic to check user is exit or not 
-            $selectQuerry = "SELECT userEmail, userPass, userRoll FROM usertbl where userEmail = '$loginEmail' and userPass = '$loginPass'";
+            $selectQuerry = "SELECT userEmail FROM usertbl where userEmail = '$userEmail'";
             $result = mysqli_query($connection, $selectQuerry);
 
             if(mysqli_num_rows($result) == 1){
+
+                if($newPass == $confPass){
+                    $updateQuerry = "UPDATE usertbl set userPass = '{$newPass}' where userEmail = '$userEmail'";
+                    $updateRes = mysqli_query($connection, $updateQuerry);
+                    echo $updateRes;
+                }else{
+                    echo '<script>
+                        Swal.fire({
+                            icon: "error",
+                            title: "Please enter same password",
+                            timer:10000,
+                        });
+                    </script>';
+                }
                 
-                $data = mysqli_fetch_assoc($result);
-                //********** Stored login user in session storage
-
-                session_start();
-                $_SESSION["loginUser1"] = $data["userEmail"];
-                $_SESSION["loginUser_roll"] = $data["userRoll"];
-                header("location:./index.php");
-
             }else{
                 echo '<script>
                     Swal.fire({
@@ -121,7 +128,6 @@
                     });
                 </script>';
             }
-
         }else{
             echo '<script>
                 Swal.fire({
@@ -130,6 +136,8 @@
                     timer:5000
                 });
             </script>';
-        };
-    }//***End of login form logic
+        }
+        
+    }
+
 ?>

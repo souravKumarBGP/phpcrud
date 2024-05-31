@@ -113,13 +113,18 @@
     Logic to save form data into database when user click signupBtn
     ************************************************************** ****************** */
     if(isset($_POST["singupBtn"])){
-        $userName = addslashes(htmlspecialchars(mysqli_escape_string($connection, $_POST["userName"])));
-        $userEmail = addslashes(htmlspecialchars(mysqli_escape_string($connection, $_POST["userEmail"])));;
-        $userPass = addslashes(md5(mysqli_escape_string($connection, $_POST["userPass"])));
-        $userRoll = addslashes($_POST["userRoll"]);
+        $userName = $_POST["userName"];
+        $userEmail = $_POST["userEmail"];
+        $userPass =$_POST["userPass"];
+        $userRoll = $_POST["userRoll"];
 
         /************ logic of apply validation on serverside *********************** */
         if($userName != "" and $userEmail != "" and $userPass != "" and $userRoll != ""){
+
+            $userName = addslashes(htmlspecialchars(mysqli_escape_string($connection, $_POST["userName"])));
+            $userEmail = addslashes(htmlspecialchars(mysqli_escape_string($connection, $_POST["userEmail"])));;
+            $userPass = addslashes(md5(mysqli_escape_string($connection, $_POST["userPass"])));
+            $userRoll = addslashes($_POST["userRoll"]);
             
             // *********** logic of check account is already exist if account is not already exit the insert data in database
             $isEmailExit = "SELECT userEmail FROM usertbl WHERE userEmail = '$userEmail'";

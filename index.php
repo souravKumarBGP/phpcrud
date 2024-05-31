@@ -1,9 +1,14 @@
 <?php 
+    include("./connection.php");
     // ******** check whos person are login user or admin if login is admin then redired admin on admin panal
     session_start();
     if($_SESSION == true){
         if($_SESSION["loginUser_roll"] == 1){
             header("location:./admin.php");
+        }else{
+            $selectQuerry = "SELECT userName FROM userTbl Where userEmail = '{$_SESSION["loginUser1"]}'";
+            $result = mysqli_query($connection, $selectQuerry);
+            echo "Wealcome:- ".mysqli_fetch_assoc($result)['userName'];
         }
     }
 
@@ -45,6 +50,15 @@
     <body>
         <h1>Home Page</h1>
         <a href="./signup.php">Sing Up</a>
-        <a href="./login.php">Login</a>
+        <?php
+            if($_SESSION == true and $_SESSION["loginUser_roll"] == 0){
+                echo '<a href="./logout.php">Logout</a>';
+
+            }else{
+                echo '<a href="./login.php">Login</a>';
+            }
+        ?>
+        
+
     </body>
 </html>
